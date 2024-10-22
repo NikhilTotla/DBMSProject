@@ -97,8 +97,10 @@
 //}
 package com.example.dbms.service;
 
+import com.example.dbms.entity.Admin;
 import com.example.dbms.entity.Client;
 import com.example.dbms.entity.Worker;
+import com.example.dbms.repository.AdminRepository;
 import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
 import io.jsonwebtoken.Claims;
@@ -125,6 +127,8 @@ public class JwtService {
     private ClientRepository clientRepository;
 
     @Autowired
+    private AdminRepository adminRepository;
+    @Autowired
     private WorkerRepository workerRepository;
 
     // Generate token based on the type of user (Client or Worker)
@@ -144,6 +148,12 @@ public class JwtService {
         if (worker.isPresent()) {
             // Add worker roles or other information as claims
             claims.put("roles", List.of("ROLE_WORKER"));
+            return createToken(claims, userName);
+        }
+        Optional<Admin> admin = adminRepository.findByUsername(userName);
+        if (admin.isPresent()) {
+            // Add admin roles or other information as claims
+            claims.put("roles", List.of("ROLE_ADMIN"));
             return createToken(claims, userName);
         }
 

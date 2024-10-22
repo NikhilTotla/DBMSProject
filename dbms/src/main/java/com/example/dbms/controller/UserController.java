@@ -1,9 +1,6 @@
 package com.example.dbms.controller;
 
-import com.example.dbms.entity.AuthRequest;
-import com.example.dbms.entity.Client;
-import com.example.dbms.entity.UserInfo;
-import com.example.dbms.entity.Worker;
+import com.example.dbms.entity.*;
 import com.example.dbms.service.JwtService;
 import com.example.dbms.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +29,33 @@ public class UserController {
         return "Welcome this endpoint is not secure";
     }
 
-    @PostMapping("/addclient")
-    public String addNewclient(@RequestBody Client client) {
+    @PostMapping("admin/addclient")
+    public String addclient(@RequestBody Client client) {
         return service.addClient(client);
     }
-    @PostMapping("/addworker")
-    public String addNewworker(@RequestBody Worker worker) {
+    @PostMapping("addAdmin")
+    public String addAdmin(@RequestBody Admin admin) {
+        return service.addAdmin(admin);
+    }
+
+    @PostMapping("admin/addworker")
+    public String addworker(@RequestBody Worker worker) {
         return service.addWorker(worker);
     }
 
     @GetMapping("/client/**")
-//    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String clientProfile() {
+        public String client() {
         return "Welcome to client Profile";
     }
-
-
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/admin/adminProfile")
-    public String adminProfile() {
-        return "Welcome to Admin Profile";
+    @GetMapping("/worker/**")
+        public String worker() {
+        return "Welcome to worker Profile";
     }
+    @GetMapping("/admin/**")
+        public String admin() {
+        return "Welcome to admin Profile";
+    }
+
 
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {

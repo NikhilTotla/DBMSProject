@@ -39,10 +39,12 @@
 
 package com.example.dbms.service;
 
+import com.example.dbms.entity.Admin;
 import com.example.dbms.entity.Client;
 import com.example.dbms.entity.Worker;
 import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
+import com.example.dbms.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,6 +66,8 @@ public class UserInfoService implements UserDetailsService {
 
     @Autowired
     private WorkerRepository workerRepository;
+    @Autowired
+    private AdminRepository adminRepository;
     @Autowired
     private PasswordEncoder encoder;
     @Override
@@ -87,6 +91,14 @@ public class UserInfoService implements UserDetailsService {
                     List.of(new SimpleGrantedAuthority("ROLE_WORKER"))
             );
         }
+        Optional<Admin> admin = adminRepository.findByUsername(username);
+        if (admin.isPresent()) {
+            return new org.springframework.security.core.userdetails.User(
+                    admin.get().getUsername(),
+                    admin.get().getPassword(),
+                    List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+            );
+        }
 
         throw new UsernameNotFoundException("User not found");
     }
@@ -101,6 +113,12 @@ public class UserInfoService implements UserDetailsService {
         worker.setPassword(encoder.encode(worker.getPassword()));
         workerRepository.save(worker);
         return "Worker Added Successfully";
+    }
+    public String addAdmin(Admin admin) {
+        // Encode password before saving the admin
+        admin.setPassword(encoder.encode(admin.getPassword()));
+        adminRepository.save(admin);
+        return "Admin Added Successfully";
     }
 
 }
