@@ -40,11 +40,11 @@ public class AdminController {
         return "Welcome to admin Profile";
     }
     @PostMapping("/addworker")
-    public String addworker(@RequestBody Worker worker) {
+    public ResponseEntity<Worker> addWorker(@RequestBody Worker worker) {
         return service.addWorker(worker);
     }
     @PostMapping("/addclient")
-    public String addclient(@RequestBody Client client) {
+    public ResponseEntity<Client> addClient(@RequestBody Client client) {
         return service.addClient(client);
     }
     @GetMapping("/details")
@@ -53,6 +53,7 @@ public class AdminController {
         String token = authHeader.replace("Bearer ", "");
 
         // Fetch user details using the token
+
         UserDetails userDetails = jwtService.loadUserByToken(token);
         Integer id = repository.findByUsername(userDetails.getUsername()).get().getId();
         Map<String, Object> response = new HashMap<>();
@@ -62,43 +63,48 @@ public class AdminController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/adddepartment")
-    public ResponseEntity<String> addDepartment(@RequestBody Department department) {
+    public ResponseEntity<Department> addDepartment(@RequestBody Department department) {
         try {
-            // Save the department entity to the database
-            departmentRepository.save(department);
-            return new ResponseEntity<>("Department added successfully!", HttpStatus.CREATED);
+            Department savedDepartment = departmentRepository.save(department);
+            return new ResponseEntity<>(savedDepartment, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error adding department", HttpStatus.INTERNAL_SERVER_ERROR);
+            // Return an error response if something goes wrong
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
     @GetMapping("/department")
     public ResponseEntity<List<Department>> getAllDepartments() {
         List<Department> departmentList = departmentRepository.findAll();
         return new ResponseEntity<>(departmentList, HttpStatus.OK);
     }
     @PostMapping("/addEquipment")
-    public ResponseEntity<String> addEquipment(@RequestBody EquipmentAvailable equipment) {
+    public ResponseEntity<EquipmentAvailable> addEquipment(@RequestBody EquipmentAvailable equipment) {
         try {
-            equipmentAvailableRepository.save(equipment);
-            return new ResponseEntity<>("Equipment added successfully", HttpStatus.CREATED);
+            EquipmentAvailable savedEquipment = equipmentAvailableRepository.save(equipment);
+
+            return new ResponseEntity<>(savedEquipment, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error adding equipment", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/equipment")
     public ResponseEntity<List<EquipmentAvailable>> getAllEquipment() {
         List<EquipmentAvailable> equipmentList = equipmentAvailableRepository.findAll();
         return new ResponseEntity<>(equipmentList, HttpStatus.OK);
     }
     @PostMapping("/addMaterial")
-    public ResponseEntity<String> addMaterial(@RequestBody MaterialAvailable material) {
+    public ResponseEntity<MaterialAvailable> addMaterial(@RequestBody MaterialAvailable material) {
         try {
-            materialAvailableRepository.save(material);
-            return new ResponseEntity<>("Material added successfully", HttpStatus.CREATED);
+            MaterialAvailable savedMaterial = materialAvailableRepository.save(material);
+            return new ResponseEntity<>(savedMaterial, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Error adding material: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/material")
     public ResponseEntity<List<MaterialAvailable>> getAllMaterials() {
         List<MaterialAvailable> materialList = materialAvailableRepository.findAll();

@@ -46,6 +46,8 @@ import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
 import com.example.dbms.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -104,18 +106,26 @@ public class UserInfoService implements UserDetailsService {
         throw new UsernameNotFoundException("User not found");
     }
 
-    public String addClient(Client client) {
-        // Encode password before saving the client
-        client.setPassword(encoder.encode(client.getPassword()));
-        clientRepository.save(client);
-        return "Client Added Successfully";
+    public ResponseEntity<Client> addClient(Client client) {
+        try {
+            client.setPassword(encoder.encode(client.getPassword()));
+            Client savedClient = clientRepository.save(client);
+            return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
-    public String addWorker(Worker worker) {
-        // Encode password before saving the worker
-        worker.setPassword(encoder.encode(worker.getPassword()));
-        workerRepository.save(worker);
-        return "Worker Added Successfully";
+
+    public ResponseEntity<Worker> addWorker(Worker worker) {
+        try {
+            worker.setPassword(encoder.encode(worker.getPassword()));
+            Worker savedWorker = workerRepository.save(worker);
+            return new ResponseEntity<>(savedWorker, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     public String addAdmin(Admin admin) {
         // Encode password before saving the admin
         admin.setPassword(encoder.encode(admin.getPassword()));
