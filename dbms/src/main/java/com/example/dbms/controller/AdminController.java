@@ -1,10 +1,10 @@
 package com.example.dbms.controller;
 
-import com.example.dbms.entity.Client;
-import com.example.dbms.entity.Department;
-import com.example.dbms.entity.Worker;
+import com.example.dbms.entity.*;
 import com.example.dbms.repository.AdminRepository;
 import com.example.dbms.repository.DepartmentRepository;
+import com.example.dbms.repository.EquipmentAvailableRepository;
+import com.example.dbms.repository.MaterialAvailableRepository;
 import com.example.dbms.service.JwtService;
 import com.example.dbms.service.UserInfoService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -27,7 +28,11 @@ public class AdminController {
     @Autowired
     private JwtService jwtService;
     @Autowired
+    private MaterialAvailableRepository materialAvailableRepository;
+    @Autowired
     private DepartmentRepository departmentRepository;
+    @Autowired
+    private EquipmentAvailableRepository equipmentAvailableRepository;
     @Autowired
     private AdminRepository repository;
     @GetMapping("/")
@@ -65,5 +70,33 @@ public class AdminController {
         } catch (Exception e) {
             return new ResponseEntity<>("Error adding department", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    @PostMapping("/addEquipment")
+    public ResponseEntity<String> addEquipment(@RequestBody EquipmentAvailable equipment) {
+        try {
+            equipmentAvailableRepository.save(equipment);
+            return new ResponseEntity<>("Equipment added successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error adding equipment", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/equipment")
+    public ResponseEntity<List<EquipmentAvailable>> getAllEquipment() {
+        List<EquipmentAvailable> equipmentList = equipmentAvailableRepository.findAll();
+        return new ResponseEntity<>(equipmentList, HttpStatus.OK);
+    }
+    @PostMapping("/addMaterial")
+    public ResponseEntity<String> addMaterial(@RequestBody MaterialAvailable material) {
+        try {
+            materialAvailableRepository.save(material);
+            return new ResponseEntity<>("Material added successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error adding material: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/material")
+    public ResponseEntity<List<MaterialAvailable>> getAllMaterials() {
+        List<MaterialAvailable> materialList = materialAvailableRepository.findAll();
+        return new ResponseEntity<>(materialList, HttpStatus.OK);
     }
 }
