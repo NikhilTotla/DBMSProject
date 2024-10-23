@@ -71,6 +71,11 @@ public class AdminController {
             return new ResponseEntity<>("Error adding department", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/department")
+    public ResponseEntity<List<Department>> getAllDepartments() {
+        List<Department> departmentList = departmentRepository.findAll();
+        return new ResponseEntity<>(departmentList, HttpStatus.OK);
+    }
     @PostMapping("/addEquipment")
     public ResponseEntity<String> addEquipment(@RequestBody EquipmentAvailable equipment) {
         try {
