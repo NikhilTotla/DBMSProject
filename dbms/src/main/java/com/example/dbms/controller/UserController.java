@@ -29,34 +29,11 @@ public class UserController {
         return "Welcome this endpoint is not secure";
     }
 
-    @PostMapping("admin/addclient")
-    public String addclient(@RequestBody Client client) {
-        return service.addClient(client);
-    }
-    @PostMapping("addAdmin")
+
+    @PostMapping("/addAdmin")
     public String addAdmin(@RequestBody Admin admin) {
         return service.addAdmin(admin);
     }
-
-    @PostMapping("admin/addworker")
-    public String addworker(@RequestBody Worker worker) {
-        return service.addWorker(worker);
-    }
-
-    @GetMapping("/client/**")
-        public String client() {
-        return "Welcome to client Profile";
-    }
-    @GetMapping("/worker/**")
-        public String worker() {
-        return "Welcome to worker Profile";
-    }
-    @GetMapping("/admin/**")
-        public String admin() {
-        return "Welcome to admin Profile";
-    }
-
-
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(

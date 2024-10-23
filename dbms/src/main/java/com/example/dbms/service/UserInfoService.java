@@ -63,7 +63,8 @@ public class UserInfoService implements UserDetailsService {
 
     @Autowired
     private ClientRepository clientRepository;
-
+    @Autowired
+    private JwtService jwtService;
     @Autowired
     private WorkerRepository workerRepository;
     @Autowired
@@ -102,6 +103,7 @@ public class UserInfoService implements UserDetailsService {
 
         throw new UsernameNotFoundException("User not found");
     }
+
     public String addClient(Client client) {
         // Encode password before saving the client
         client.setPassword(encoder.encode(client.getPassword()));
