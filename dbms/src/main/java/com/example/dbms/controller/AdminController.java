@@ -1,10 +1,7 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
-import com.example.dbms.repository.AdminRepository;
-import com.example.dbms.repository.DepartmentRepository;
-import com.example.dbms.repository.EquipmentAvailableRepository;
-import com.example.dbms.repository.MaterialAvailableRepository;
+import com.example.dbms.repository.*;
 import com.example.dbms.service.JwtService;
 import com.example.dbms.service.UserInfoService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -30,6 +27,10 @@ public class AdminController {
     @Autowired
     private MaterialAvailableRepository materialAvailableRepository;
     @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private WorkerRepository workerRepository;
+    @Autowired
     private DepartmentRepository departmentRepository;
     @Autowired
     private EquipmentAvailableRepository equipmentAvailableRepository;
@@ -39,14 +40,26 @@ public class AdminController {
     public String admin() {
         return "Welcome to admin Profile";
     }
+    @GetMapping("/workers")
+    public ResponseEntity<List<Worker>> getAllWorkers() {
+        List<Worker> workerList = workerRepository.findAll();
+        return new ResponseEntity<>(workerList, HttpStatus.OK);
+    }
     @PostMapping("/addworker")
     public ResponseEntity<Worker> addWorker(@RequestBody Worker worker) {
         return service.addWorker(worker);
     }
+    @GetMapping("/clients")
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clientList = clientRepository.findAll();
+        return new ResponseEntity<>(clientList, HttpStatus.OK);
+    }
+
     @PostMapping("/addclient")
     public ResponseEntity<Client> addClient(@RequestBody Client client) {
         return service.addClient(client);
     }
+
     @GetMapping("/details")
     public ResponseEntity<Map<String,Object>> getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
         // Extract token from the Authorization header
