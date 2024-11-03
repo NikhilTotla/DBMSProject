@@ -1,10 +1,11 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
+import com.example.dbms.service.AdminService;
 import com.example.dbms.service.JwtService;
 import com.example.dbms.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,8 @@ public class UserController {
 
     @Autowired
     private UserInfoService service;
+    @Autowired
+    private AdminService adminService;
 
     @Autowired
     private JwtService jwtService;
@@ -31,8 +34,8 @@ public class UserController {
 
 
     @PostMapping("/addAdmin")
-    public String addAdmin(@RequestBody Admin admin) {
-        return service.addAdmin(admin);
+    public ResponseEntity<String> addAdmin(@RequestBody Admin admin) {
+        return adminService.addAdmin(admin);
     }
     @PostMapping("/generateToken")
     public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {

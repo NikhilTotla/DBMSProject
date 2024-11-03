@@ -106,31 +106,31 @@ public class UserInfoService implements UserDetailsService {
         throw new UsernameNotFoundException("User not found");
     }
 
-    public ResponseEntity<Client> addClient(Client client) {
-        try {
-            client.setPassword(encoder.encode(client.getPassword()));
-            Client savedClient = clientRepository.save(client);
-            return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public ResponseEntity<Worker> addWorker(Worker worker) {
-        try {
-            worker.setPassword(encoder.encode(worker.getPassword()));
-            Worker savedWorker = workerRepository.save(worker);
-            return new ResponseEntity<>(savedWorker, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public String addAdmin(Admin admin) {
-        // Encode password before saving the admin
-        admin.setPassword(encoder.encode(admin.getPassword()));
-        adminRepository.save(admin);
-        return "Admin Added Successfully";
-    }
+//    public ResponseEntity<Client> addClient(Client client) {
+//        try {
+//            client.setPassword(encoder.encode(client.getPassword()));
+//            Client savedClient = clientRepository.save(client);
+//            return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    public ResponseEntity<Worker> addWorker(Worker worker) {
+//        try {
+//            worker.setPassword(encoder.encode(worker.getPassword()));
+//            Worker savedWorker = workerRepository.save(worker);
+//            return new ResponseEntity<>(savedWorker, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//
+//    public String addAdmin(Admin admin) {
+//        // Encode password before saving the admin
+//        admin.setPassword(encoder.encode(admin.getPassword()));
+//        adminRepository.save(admin);
+//        return "Admin Added Successfully";
+//    }
 
 }

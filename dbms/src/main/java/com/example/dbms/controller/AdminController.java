@@ -2,8 +2,7 @@ package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
 import com.example.dbms.repository.*;
-import com.example.dbms.service.JwtService;
-import com.example.dbms.service.UserInfoService;
+import com.example.dbms.service.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +22,13 @@ public class AdminController {
     @Autowired
     private UserInfoService service;
     @Autowired
+    private AdminService adminService;
+    @Autowired
+    private ClientService clientService;
+    @Autowired
+    private WorkerService workerService;
+
+    @Autowired
     private JwtService jwtService;
     @Autowired
     private MaterialAvailableRepository materialAvailableRepository;
@@ -30,6 +36,8 @@ public class AdminController {
     private ClientRepository clientRepository;
     @Autowired
     private WorkerRepository workerRepository;
+    @Autowired
+    private AdminRepository adminRepository;
     @Autowired
     private DepartmentRepository departmentRepository;
     @Autowired
@@ -47,34 +55,58 @@ public class AdminController {
     }
     @PostMapping("/addworker")
     public ResponseEntity<Worker> addWorker(@RequestBody Worker worker) {
-        return service.addWorker(worker);
+        return workerService.addWorker(worker);
     }
     @GetMapping("/clients")
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> clientList = clientRepository.findAll();
         return new ResponseEntity<>(clientList, HttpStatus.OK);
     }
-
+    @GetMapping("/admins")
+    public ResponseEntity<List<Admin>> getAllAdmins() {
+        List<Admin> adminList = adminRepository.findAll();
+        return new ResponseEntity<>(adminList, HttpStatus.OK);
+    }
     @PostMapping("/addclient")
     public ResponseEntity<Client> addClient(@RequestBody Client client) {
-        return service.addClient(client);
+        return clientService.addClient(client);
+    }
+    @PostMapping("/deleteClient/{id}")
+    public ResponseEntity<String> deleteClient(@PathVariable Integer id) {
+        try {
+            if (clientRepository.existsById(id)) {
+                clientRepository.deleteById(id);
+                return new ResponseEntity<>("Client deleted successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting client", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/deleteWorker/{id}")
+    public ResponseEntity<String> deleteWorker(@PathVariable Integer id) {
+        try {
+            if (workerRepository.existsById(id)) {
+                workerRepository.deleteById(id);
+                return new ResponseEntity<>("Worker deleted successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Worker not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting worker", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/details")
-    public ResponseEntity<Map<String,Object>> getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
-        // Extract token from the Authorization header
-        String token = authHeader.replace("Bearer ", "");
-
-        // Fetch user details using the token
-
-        UserDetails userDetails = jwtService.loadUserByToken(token);
-        Integer id = repository.findByUsername(userDetails.getUsername()).get().getId();
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", id);  // Add user ID
-        response.put("username", userDetails.getUsername());
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> getAdminDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        try {
+            return new ResponseEntity<>(adminService.getAdminInfo(authHeader), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("error", "Unable to fetch user details"), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
     @PostMapping("/adddepartment")
     public ResponseEntity<Department> addDepartment(@RequestBody Department department) {
         try {
@@ -85,7 +117,19 @@ public class AdminController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @PostMapping("/deleteDepartment/{id}")
+    public ResponseEntity<String> deleteDepartment(@PathVariable Integer id) {
+        try {
+            if (departmentRepository.existsById(id)) {
+                departmentRepository.deleteById(id);
+                return new ResponseEntity<>("Department deleted successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Department not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting department", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     @GetMapping("/department")
     public ResponseEntity<List<Department>> getAllDepartments() {
@@ -100,6 +144,19 @@ public class AdminController {
             return new ResponseEntity<>(savedEquipment, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/deleteEquipment/{id}")
+    public ResponseEntity<String> deleteEquipment(@PathVariable Integer id) {
+        try {
+            if (equipmentAvailableRepository.existsById(id)) {
+                equipmentAvailableRepository.deleteById(id);
+                return new ResponseEntity<>("Equipment deleted successfully", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Equipment not found", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting equipment", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
