@@ -8,6 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/auth/admin")
 public class ProjectController {
@@ -34,6 +37,15 @@ public class ProjectController {
         try {
             Project savedProject = projectRepository.save(project);
             return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/projects")
+    public ResponseEntity<List<Project>> showProjects() {
+        try {
+            List<Project> projects = projectRepository.findAll();
+            return new ResponseEntity<>(projects, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -130,14 +142,37 @@ public class ProjectController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/addmaterialdetail")
-    public ResponseEntity<MaterialDetails> addMaterialDetail(@RequestBody MaterialDetails materialDetail) {
-        try {
-            MaterialDetails savedMaterialDetail = materialDetailsRepository.save(materialDetail);
-            return new ResponseEntity<>(savedMaterialDetail, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+//    @PostMapping("/addmaterialdetail")
+//    public ResponseEntity<MaterialDetails> addMaterialDetail(@RequestBody MaterialDetails materialDetail) {
+//        try {
+//            MaterialDetails savedMaterialDetail = materialDetailsRepository.save(materialDetail);
+//            return new ResponseEntity<>(savedMaterialDetail, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+//@PostMapping("/addmaterialdetail")
+//public ResponseEntity<MaterialDetails> addMaterialDetail(@RequestBody MaterialDetails materialDetail) {
+//    try {
+//        // Save the MaterialDetails entry
+//        MaterialDetails savedMaterialDetail = materialDetailsRepository.save(materialDetail);
+//
+//        // Update the corresponding MaterialAvailable entry
+//        Optional<MaterialAvailable> materialAvailableOpt = materialAvailableRepository.findById(materialDetail.getMaterialId());
+//
+//        if (materialAvailableOpt.isPresent()) {
+//            MaterialAvailable materialAvailable = materialAvailableOpt.get();
+//            // Add the quantity specified in MaterialDetails to the MaterialAvailable
+//            materialAvailable.setQuantity(materialAvailable.getQuantity() + materialDetail.getQuantity());
+//            materialAvailableRepository.save(materialAvailable); // Save updated quantity
+//        } else {
+//            // Handle the case where the MaterialAvailable entry does not exist
+//            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+//        }
+//
+//        return new ResponseEntity<>(savedMaterialDetail, HttpStatus.CREATED);
+//    } catch (Exception e) {
+//        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
+//}
 }
