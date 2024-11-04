@@ -25,7 +25,8 @@ public class ProjectController {
     private MaterialDetailsRepository materialDetailsRepository;
     @Autowired
     private WarehouseRepository warehouseRepository;
-
+    @Autowired
+    private MaterialAvailableRepository materialAvailableRepository;
     @Autowired
     private ProjectWorkersRepository projectWorkerRepository;
     @PostMapping("/addproject")
@@ -85,14 +86,38 @@ public class ProjectController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+//    @PostMapping("/addprojectmaterialrequired")
+//    public ResponseEntity<ProjectMaterialReq> addProjectMaterialRequired(@RequestBody ProjectMaterialReq projectMaterialRequired) {
+//        try {
+//            ProjectMaterialReq savedProjectMaterialRequired = projectMaterialReqRepository.save(projectMaterialRequired);
+//            return new ResponseEntity<>(savedProjectMaterialRequired, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
     @PostMapping("/addprojectmaterialrequired")
     public ResponseEntity<ProjectMaterialReq> addProjectMaterialRequired(@RequestBody ProjectMaterialReq projectMaterialRequired) {
         try {
+            // Save the ProjectMaterialReq entity
             ProjectMaterialReq savedProjectMaterialRequired = projectMaterialReqRepository.save(projectMaterialRequired);
+
+            // Update the MaterialAvailable quantity
+            MaterialAvailable material = materialAvailableRepository.findById(projectMaterialRequired.getMaterialReq()).orElse(null);
+            if (material != null) {
+                int newQuantity = material.getQuantity() - projectMaterialRequired.getQuantityReq();
+                if (newQuantity < 0) {
+                    // Optional: handle cases where quantity would become negative
+                    return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                }
+                material.setQuantity(newQuantity);
+                materialAvailableRepository.save(material);
+            } else {
+                // Handle case where material is not found, if necessary
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            }
+
             return new ResponseEntity<>(savedProjectMaterialRequired, HttpStatus.CREATED);
         } catch (Exception e) {
-            // Log the error if necessary
-            // logger.error("Error occurred while saving project material requirement: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -102,8 +127,6 @@ public class ProjectController {
             Warehouse savedWarehouse = warehouseRepository.save(warehouse);
             return new ResponseEntity<>(savedWarehouse, HttpStatus.CREATED);
         } catch (Exception e) {
-            // Log the error if necessary
-            // logger.error("Error occurred while saving warehouse: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -113,8 +136,6 @@ public class ProjectController {
             MaterialDetails savedMaterialDetail = materialDetailsRepository.save(materialDetail);
             return new ResponseEntity<>(savedMaterialDetail, HttpStatus.CREATED);
         } catch (Exception e) {
-            // Log the error if necessary
-            // logger.error("Error occurred while saving material detail: ", e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
