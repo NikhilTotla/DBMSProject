@@ -1,9 +1,9 @@
 package com.example.dbms.service;
 
+import com.example.dbms.entity.Project;
+import com.example.dbms.entity.ProjectWorkers;
 import com.example.dbms.entity.Worker;
-import com.example.dbms.repository.WorkerRepository;
-import com.example.dbms.repository.ClientRepository;
-import com.example.dbms.repository.AdminRepository;
+import com.example.dbms.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkerService {
@@ -23,6 +25,10 @@ public class WorkerService {
     private ClientRepository clientRepository;
     @Autowired
     private AdminRepository adminRepository;
+    @Autowired
+    private ProjectWorkersRepository projectWorkersRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
     @Autowired
     private PasswordEncoder encoder;
     @Autowired
@@ -54,4 +60,19 @@ public class WorkerService {
 
         return response;
     }
+    public List<Project> getProjectsForWorker(String username) {
+        // Fetch worker by username
+        Worker worker = workerRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+
+        // Get project IDs associated with this worker
+        List<Integer> projectIds = projectWorkersRepository.findByWorkerId(worker.getId())
+                .stream()
+                .map(ProjectWorkers::getProjectId)
+                .collect(Collectors.toList());
+
+        // Fetch all projects by IDs
+        return projectRepository.findAllById(projectIds);
+    }
+
 }
