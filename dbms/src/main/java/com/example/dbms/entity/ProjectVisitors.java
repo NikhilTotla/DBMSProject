@@ -17,15 +17,16 @@ public class ProjectVisitors {
     private Integer id;
 
     private Integer projectId;
-
+    private Integer visitorId;
     private Integer servedBy;
 
     // Constructors
     public ProjectVisitors() {}
 
-    public ProjectVisitors(Integer projectId, Integer servedBy) {
+    public ProjectVisitors(Integer projectId, Integer servedBy, Integer visitorId) {
         this.projectId = projectId;
         this.servedBy = servedBy;
+        this.visitorId = visitorId;
     }
 
     // Getters and Setters
@@ -51,5 +52,13 @@ public class ProjectVisitors {
 
     public void setServedBy(Integer servedBy) {
         this.servedBy = servedBy;
+    }
+
+    public Integer getVisitorId() {
+        return visitorId;
+    }
+
+    public void setVisitorId(Integer visitorId) {
+        this.visitorId = visitorId;
     }
 }

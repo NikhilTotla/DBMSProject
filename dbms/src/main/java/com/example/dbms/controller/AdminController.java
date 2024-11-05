@@ -180,4 +180,30 @@ public class AdminController {
         List<MaterialAvailable> materialList = materialAvailableRepository.findAll();
         return new ResponseEntity<>(materialList, HttpStatus.OK);
     }
+
+    @PostMapping("/addVisitor")
+    public ResponseEntity<String> addVisitor(@RequestBody Visitor visitor) {
+        return adminService.addVisitor(visitor);
+    }
+    @GetMapping("/visitors")
+    public ResponseEntity<List<Visitor>> getAllVisitors() {
+        return adminService.getAllVisitors();
+    }
+
+    // Get all project visitors
+    @GetMapping("/projectVisitors")
+    public ResponseEntity<List<ProjectVisitors>> getAllProjectVisitors() {
+        return adminService.getAllProjectVisitors();
+    }
+
+//    @PostMapping("/addvisitor")
+//    public ResponseEntity<Visitor> addVisitor(@RequestBody Visitor visitor) {
+//        try {
+//            ProjectVisitors savedVisitor = VisitorRepository.save(visitor);
+//            return new ResponseEntity<>(savedVisitor, HttpStatus.CREATED);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
+
 }
