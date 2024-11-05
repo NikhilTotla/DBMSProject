@@ -27,8 +27,6 @@ public class ProjectController {
     @Autowired
     private ProjectVisitorsRepository projectVisitorRepository;
     @Autowired
-    private MaterialDetailsRepository materialDetailsRepository;
-    @Autowired
     private WarehouseRepository warehouseRepository;
     @Autowired
     private MaterialAvailableRepository materialAvailableRepository;
