@@ -1,9 +1,13 @@
 package com.example.dbms.service;
 
 import com.example.dbms.entity.Client;
+import com.example.dbms.entity.Worker;
 import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
 import com.example.dbms.repository.AdminRepository;
+import com.example.dbms.repository.ProjectWorkersRepository;
+import com.example.dbms.repository.ProjectMaterialReqRepository;
+import com.example.dbms.repository.ProjectEquipRequiredRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @Service
 public class ClientService {
@@ -27,6 +32,13 @@ public class ClientService {
     private PasswordEncoder encoder;
     @Autowired
     private JwtService jwtService;
+    @Autowired
+    private ProjectWorkersRepository projectWorkersRepository;
+    @Autowired
+    private ProjectMaterialReqRepository projectMaterialReqRepository;
+    @Autowired
+    private ProjectEquipRequiredRepository projectEquipRequiredRepository;
+
     public ResponseEntity<Client> addClient(Client client) {
         // Check if username exists in Client, Worker, or Admin
         if (clientRepository.findByUsername(client.getUsername()).isPresent() ||
@@ -43,6 +55,7 @@ public class ClientService {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     public Map<String, Object> getClientInfo(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         UserDetails userDetails = jwtService.loadUserByToken(token);
@@ -53,5 +66,18 @@ public class ClientService {
         response.put("username", userDetails.getUsername());
 
         return response;
+    }
+
+    public Map<String, Object> getProjectDetails(Integer projectId) {
+        List<Worker> workers = projectWorkersRepository.findWorkersByProjectId(projectId);
+        List<Map<String, Object>> materials = projectMaterialReqRepository.findMaterialsAndQuantitiesByProjectId(projectId);
+        List<Map<String, Object>> equipment = projectEquipRequiredRepository.findEquipmentAndQuantitiesByProjectId(projectId);
+
+        Map<String, Object> projectDetails = new HashMap<>();
+        projectDetails.put("workers", workers);
+        projectDetails.put("materials", materials);
+        projectDetails.put("equipment", equipment);
+
+        return projectDetails;
     }
 }
