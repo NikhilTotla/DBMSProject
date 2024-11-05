@@ -100,15 +100,6 @@ public class ProjectController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-//    @PostMapping("/addprojectmaterialrequired")
-//    public ResponseEntity<ProjectMaterialReq> addProjectMaterialRequired(@RequestBody ProjectMaterialReq projectMaterialRequired) {
-//        try {
-//            ProjectMaterialReq savedProjectMaterialRequired = projectMaterialReqRepository.save(projectMaterialRequired);
-//            return new ResponseEntity<>(savedProjectMaterialRequired, HttpStatus.CREATED);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
     @PostMapping("/addprojectmaterialrequired")
     public ResponseEntity<ProjectMaterialReq> addProjectMaterialRequired(@RequestBody ProjectMaterialReq projectMaterialRequired) {
         try {

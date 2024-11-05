@@ -16,14 +16,16 @@ public class MaterialAvailable {
 
     private String name;
     private Integer quantity;
+    private Integer storedIn; // Foreign key reference to 'warehouse' table
 
     // Default constructor
     public MaterialAvailable() {}
 
     // Parameterized constructor
-    public MaterialAvailable(String name, Integer quantity) {
+    public MaterialAvailable(String name, Integer quantity, Integer storedIn) {
         this.name = name;
         this.quantity = quantity;
+        this.storedIn = storedIn;
     }
 
     // Getters and setters
@@ -49,5 +51,13 @@ public class MaterialAvailable {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Integer getStoredIn() {
+        return storedIn;
+    }
+
+    public void setStoredIn(Integer storedIn) {
+        this.storedIn = storedIn;
     }
 }
