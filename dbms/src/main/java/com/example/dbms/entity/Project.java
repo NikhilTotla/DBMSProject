@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 import java.sql.Date;
 
 @Entity
-//@Table(name = "project")
+@Table(name = "project")
 public class Project {
 
     @Id
