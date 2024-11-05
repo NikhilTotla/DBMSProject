@@ -36,8 +36,22 @@ public class ClientController {
     }
 
     @GetMapping("/projects/{id}")
-    public ResponseEntity<Map<String, Object>> getProjectDetails(@PathVariable Integer id) {
+    public ResponseEntity<Map<String, Object>> getProjectDetails(@PathVariable Integer id, @RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        // Extract client information from the authorization header
+        Map<String, Object> clientInfo = clientService.getClientInfo(authHeader);
+        Integer clientId = (Integer) clientInfo.get("id");
+
+        // Retrieve the project
+        Project project = projectRepository.findById(id).orElse(null);
+
+        // Check if the project belongs to the client
+        if (project == null || !project.getSoldTo().equals(clientId)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Project does not belong to the client"));
+        }
+
+        // Get project details
         Map<String, Object> projectDetails = clientService.getProjectDetails(id);
         return ResponseEntity.ok(projectDetails); // Return 200 OK with the project details
     }
+
 }
