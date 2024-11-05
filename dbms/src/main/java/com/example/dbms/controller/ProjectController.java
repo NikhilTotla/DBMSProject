@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -140,6 +142,39 @@ public class ProjectController {
             return new ResponseEntity<>(savedWarehouse, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/project/details/{projectId}")
+    public ResponseEntity<Map<String, Object>> getProjectDetailsById(@PathVariable Integer projectId) {
+        try {
+            // Retrieve basic project information
+            Optional<Project> projectOpt = projectRepository.findById(projectId);
+            if (projectOpt.isEmpty()) {
+                return new ResponseEntity<>(Map.of("error", "Project not found"), HttpStatus.NOT_FOUND);
+            }
+            Project project = projectOpt.get();
+
+            // Fetch associated data
+            List<ProjectVisitors> visitors = projectVisitorRepository.findByProjectId(projectId);
+            List<Worker> workers = projectWorkerRepository.findWorkersByProjectId(projectId);
+            Optional<ProjectAdmin> admin = projectAdminRepository.findById(projectId);
+            List<Map<String, Object>> materials = projectMaterialReqRepository.findMaterialsAndQuantitiesByProjectId(projectId);
+            List<Map<String, Object>> equipment = projectEquipRequiredRepository.findEquipmentAndQuantitiesByProjectId(projectId);
+
+            // Build the response map
+            Map<String, Object> response = new HashMap<>();
+            response.put("project", project);
+            response.put("visitors", visitors);
+            response.put("workers", workers);
+            response.put("admin", admin.orElse(null));
+            response.put("materials", materials);
+            response.put("equipment", equipment);
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(Map.of("error", "Unable to fetch project details"), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 //    @PostMapping("/addmaterialdetail")
