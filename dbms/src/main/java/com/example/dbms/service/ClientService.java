@@ -2,12 +2,16 @@ package com.example.dbms.service;
 
 import com.example.dbms.entity.Client;
 import com.example.dbms.entity.Worker;
+import com.example.dbms.entity.Visitor;
 import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
 import com.example.dbms.repository.AdminRepository;
 import com.example.dbms.repository.ProjectWorkersRepository;
 import com.example.dbms.repository.ProjectMaterialReqRepository;
-import com.example.dbms.repository.ProjectEquipRequiredRepository;
+import com.example.dbms.repository.ProjectVisitorsRepository;
+import com.example.dbms.entity.ProjectVisitors;
+
+import com.example.dbms.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +42,10 @@ public class ClientService {
     private ProjectMaterialReqRepository projectMaterialReqRepository;
     @Autowired
     private ProjectEquipRequiredRepository projectEquipRequiredRepository;
+    @Autowired
+    private ProjectVisitorsRepository projectVisitorsRepository;
+    @Autowired
+    private VisitorRepository visitorRepository;
 
     public ResponseEntity<Client> addClient(Client client) {
         // Check if username exists in Client, Worker, or Admin
@@ -80,4 +88,23 @@ public class ClientService {
 
         return projectDetails;
     }
+
+    public List<Visitor> getVisitorsByProjectId(Integer projectId) {
+        return projectVisitorsRepository.findVisitorsByProjectId(projectId);
+    }
+
+    public boolean deleteVisitorFromProject(Integer projectId, Integer visitorId) {
+        // Find the ProjectVisitors record
+        ProjectVisitors projectVisitor = projectVisitorsRepository.findByProjectIdAndServedBy(projectId, visitorId);
+        if (projectVisitor != null) {
+            // Delete the ProjectVisitors record
+            projectVisitorsRepository.delete(projectVisitor);
+            return true;
+        }
+        return false;
+    }
+
 }
+
+
+
