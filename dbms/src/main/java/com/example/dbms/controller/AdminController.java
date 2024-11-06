@@ -1,6 +1,7 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
+import com.example.dbms.exception.CustomException;
 import com.example.dbms.repository.*;
 import com.example.dbms.service.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -114,7 +115,7 @@ public class AdminController {
             return new ResponseEntity<>(savedDepartment, HttpStatus.CREATED);
         } catch (Exception e) {
             // Return an error response if something goes wrong
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
     @PostMapping("/deleteDepartment/{id}")
@@ -143,7 +144,7 @@ public class AdminController {
 
             return new ResponseEntity<>(savedEquipment, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
     @PostMapping("/deleteEquipment/{id}")
@@ -171,7 +172,7 @@ public class AdminController {
             MaterialAvailable savedMaterial = materialAvailableRepository.save(material);
             return new ResponseEntity<>(savedMaterial, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 

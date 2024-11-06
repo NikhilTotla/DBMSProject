@@ -1,6 +1,7 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.Project;
+import com.example.dbms.exception.CustomException;
 import com.example.dbms.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class WorkerController {
 
             return new ResponseEntity<>(projects, HttpStatus.OK);
         }catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 }

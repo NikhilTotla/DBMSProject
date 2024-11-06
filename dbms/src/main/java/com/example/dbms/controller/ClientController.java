@@ -1,6 +1,7 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
+import com.example.dbms.exception.CustomException;
 import com.example.dbms.repository.ProjectRepository;
 import com.example.dbms.repository.ProjectVisitorsRepository;
 import com.example.dbms.repository.*;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/auth/client")
@@ -62,7 +64,7 @@ public class ClientController {
             }
             return ResponseEntity.ok(projects);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 
@@ -113,7 +115,8 @@ public class ClientController {
             List<Visitor> visitors = clientService.getVisitorsByProjectId(id);
             return ResponseEntity.ok(visitors);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            throw new CustomException("ERROR!");
         }
     }
 
@@ -131,7 +134,7 @@ public class ClientController {
             ProjectVisitors savedProjectVisitor = projectVisitorsRepository.save(projectVisitor);
             return new ResponseEntity<>(savedProjectVisitor, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 

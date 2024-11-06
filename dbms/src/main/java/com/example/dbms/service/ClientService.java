@@ -3,6 +3,7 @@ package com.example.dbms.service;
 import com.example.dbms.entity.Client;
 import com.example.dbms.entity.Worker;
 import com.example.dbms.entity.Visitor;
+import com.example.dbms.exception.CustomException;
 import com.example.dbms.repository.ClientRepository;
 import com.example.dbms.repository.WorkerRepository;
 import com.example.dbms.repository.AdminRepository;
@@ -60,7 +61,7 @@ public class ClientService {
             Client savedClient = clientRepository.save(client);
             return new ResponseEntity<>(savedClient, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 

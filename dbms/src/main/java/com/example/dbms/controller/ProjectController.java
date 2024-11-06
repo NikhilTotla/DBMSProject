@@ -1,6 +1,7 @@
 package com.example.dbms.controller;
 
 import com.example.dbms.entity.*;
+import com.example.dbms.exception.CustomException;
 import com.example.dbms.repository.*;
 import com.example.dbms.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,8 @@ public class ProjectController {
             Project savedProject = projectRepository.save(project);
             return new ResponseEntity<>(savedProject, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//          return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/projects")
@@ -58,7 +60,8 @@ public class ProjectController {
         } catch (Exception e) {
             // Log the error if necessary
             // logger.error("Error occurred while saving project equipment requirement: ", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -71,7 +74,8 @@ public class ProjectController {
         } catch (Exception e) {
             // Log the error if necessary
             // logger.error("Error occurred while saving project visitor: ", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,7 +88,8 @@ public class ProjectController {
         } catch (Exception e) {
             // Log the error if necessary
             // logger.error("Error occurred while saving project worker: ", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/addprojectadmin")
@@ -95,7 +100,8 @@ public class ProjectController {
         } catch (Exception e) {
             // Log the error if necessary
             // logger.error("Error occurred while saving project admin: ", e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/addprojectmaterialrequired")
@@ -121,7 +127,8 @@ public class ProjectController {
 
             return new ResponseEntity<>(savedProjectMaterialRequired, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @PostMapping("/addwarehouse")
@@ -130,7 +137,8 @@ public class ProjectController {
             Warehouse savedWarehouse = warehouseRepository.save(warehouse);
             return new ResponseEntity<>(savedWarehouse, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+//            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
         }
     }
 
@@ -163,7 +171,7 @@ public class ProjectController {
             return new ResponseEntity<>(response, HttpStatus.OK);
 
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("error", "Unable to fetch project details"), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Map.of("error", "Unable to fetch project details"), HttpStatus.BAD_REQUEST);
         }
     }
 //    @PostMapping("/addmaterialdetail")
