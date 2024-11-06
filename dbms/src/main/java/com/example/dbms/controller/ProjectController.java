@@ -52,6 +52,22 @@ public class ProjectController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/deleteProject")
+    public ResponseEntity<Void> deleteProject(@RequestBody Map<String, Integer> request) {
+        Integer projectId = request.get("id");
+        try {
+            if (projectId != null && projectRepository.existsById(projectId)) {
+                projectRepository.deleteById(projectId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Return 204 No Content on successful deletion
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Return 404 Not Found if project doesn't exist
+            }
+        } catch (Exception e) {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomException("ERROR!");
+        }
+    }
+
     @PostMapping("/addprojectequiprequired")
     public ResponseEntity<ProjectEquipRequired> addProjectEquipRequired(@RequestBody ProjectEquipRequired projectEquipRequired) {
         try {
@@ -78,6 +94,31 @@ public class ProjectController {
 //            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/deleteprojectvisitor")
+    public ResponseEntity<Void> deleteProjectVisitor(@RequestBody Map<String, Integer> request) {
+        Integer projectId = request.get("projectId");
+        Integer visitorId = request.get("visitorId");
+
+        try {
+            // Find the ProjectVisitors entry based on projectId and visitorId
+            ProjectVisitors projectVisitor = projectVisitorRepository.findByProjectIdAndServedBy(projectId, visitorId);
+
+            if (projectVisitor != null) {
+                // Delete by the found project's ID
+                projectVisitorRepository.deleteById(projectVisitor.getId());
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content on successful deletion
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Not Found if the entry doesn't exist
+            }
+        } catch (Exception e) {
+            // Log the error if necessary
+            // logger.error("Error occurred while deleting project visitor: ", e);
+            throw new CustomException("ERROR while deleting project visitor!");
+        }
+    }
+
+
+
 
     // Method to add a project worker
     @PostMapping("/addprojectworker")
