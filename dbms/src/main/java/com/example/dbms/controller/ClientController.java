@@ -68,6 +68,31 @@ public class ClientController {
         }
     }
 
+
+    @GetMapping("/visitors")
+    public ResponseEntity<List<Visitor>> getAllVisitors(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+        try {
+            // Fetch client info from the authorization header
+            Map<String, Object> clientInfo = clientService.getClientInfo(authHeader);
+            Integer clientId = (Integer) clientInfo.get("id");
+
+            // Optionally, you can add logic to ensure the client has permission to view the visitor data
+
+            // Retrieve all visitors from the repository
+            List<Visitor> visitors = visitorRepository.findAll();
+            if (visitors.isEmpty()) {
+                return ResponseEntity.noContent().build();  // If no visitors, return HTTP 204 (No Content)
+            }
+
+            return ResponseEntity.ok(visitors);  // Return visitors with HTTP 200 (OK)
+        } catch (Exception e) {
+            // Handle any errors that occur during the retrieval
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);  // Return HTTP 500 (Internal Server Error)
+        }
+    }
+
+
+    //    add here according to remaining code
     @GetMapping("/project/details/{projectId}")
     public ResponseEntity<Map<String, Object>> getProjectDetailsById(@PathVariable Integer projectId) {
         try {
