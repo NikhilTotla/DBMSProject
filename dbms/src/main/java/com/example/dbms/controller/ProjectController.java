@@ -213,6 +213,21 @@ public class ProjectController {
             throw new CustomException("Error updating warehouse!");
         }
     }
+    @PostMapping("/deletewarehouse/{id}")
+    public ResponseEntity<Void> deleteWarehouse(@PathVariable Integer id) {
+        try {
+            // Check if the warehouse exists
+            if (warehouseRepository.findById(id).isPresent()) {
+                warehouseRepository.deleteById(id); // Delete the warehouse by ID
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content on successful deletion
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 Not Found if warehouse doesn't exist
+            }
+        } catch (Exception e) {
+            throw new CustomException("Error while deleting warehouse!");
+        }
+    }
+
 
 
     @GetMapping("/project/details/{projectId}")
