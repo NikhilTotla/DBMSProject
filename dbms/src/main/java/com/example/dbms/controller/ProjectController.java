@@ -172,6 +172,21 @@ public class ProjectController {
 //            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/warehouses")
+    public ResponseEntity<List<Warehouse>> getAllWarehouses() {
+        try {
+            List<Warehouse> warehouses = warehouseRepository.findAll();
+
+            if (!warehouses.isEmpty()) {
+                return new ResponseEntity<>(warehouses, HttpStatus.OK); // 200 OK with list of warehouses
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content if no warehouses are found
+            }
+        } catch (Exception e) {
+            throw new CustomException("Error fetching warehouses!");
+        }
+    }
+
     @PostMapping("/addwarehouse")
     public ResponseEntity<Warehouse> addWarehouse(@RequestBody Warehouse warehouse) {
         try {
@@ -182,6 +197,23 @@ public class ProjectController {
             throw new CustomException("ERROR!");
         }
     }
+    @PostMapping("/updatewarehouse")
+    public ResponseEntity<Warehouse> updateWarehouse(@RequestBody Warehouse warehouse) {
+        try {
+            Optional<Warehouse> existingWarehouse = warehouseRepository.findById(warehouse.getId());
+
+            if (existingWarehouse.isPresent()) {
+                // Update the existing warehouse details
+                Warehouse updatedWarehouse = warehouseRepository.save(warehouse);
+                return new ResponseEntity<>(updatedWarehouse, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 if warehouse not found
+            }
+        } catch (Exception e) {
+            throw new CustomException("Error updating warehouse!");
+        }
+    }
+
 
     @GetMapping("/project/details/{projectId}")
     public ResponseEntity<Map<String, Object>> getProjectDetailsById(@PathVariable Integer projectId) {
