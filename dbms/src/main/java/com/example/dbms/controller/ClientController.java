@@ -104,9 +104,10 @@ public class ClientController {
             Project project = projectOpt.get();
 
             // Fetch associated data
-            List<ProjectVisitors> visitors = projectVisitorsRepository.findByProjectId(projectId);
+//            List<ProjectVisitors> visitors = projectVisitorsRepository.findByProjectId(projectId);
+            List<Visitor> visitors = projectVisitorRepository.findVisitorsByProjectId(projectId); // Retrieve full visitor details
             List<Worker> workers = projectWorkerRepository.findWorkersByProjectId(projectId);
-            Optional<ProjectAdmin> admin = projectAdminRepository.findById(projectId);
+            List<ProjectAdmin> admins = projectAdminRepository.findByProjectId(projectId); // Get list of admins
             List<Map<String, Object>> materials = projectMaterialReqRepository.findMaterialsAndQuantitiesByProjectId(projectId);
             List<Map<String, Object>> equipment = projectEquipRequiredRepository.findEquipmentAndQuantitiesByProjectId(projectId);
 
@@ -115,7 +116,7 @@ public class ClientController {
             response.put("project", project);
             response.put("visitors", visitors.isEmpty() ? List.of() : visitors); // If no visitors, return empty list
             response.put("workers", workers.isEmpty() ? List.of() : workers); // If no workers, return empty list
-            response.put("admin", admin.orElse(null)); // If no admin, return null
+            response.put("admins", admins); // Add list of admins to response
             response.put("materials", materials.isEmpty() ? List.of() : materials); // If no materials, return empty list
             response.put("equipment", equipment.isEmpty() ? List.of() : equipment); // If no equipment, return empty list
 
