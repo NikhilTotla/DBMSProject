@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth/admin")
@@ -84,6 +85,31 @@ public class AdminController {
         } catch (Exception e) {
             return new ResponseEntity<>("Error deleting client", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @PostMapping("/updateclient/{id}")
+    public ResponseEntity<String> updateClient(@PathVariable Integer id, @RequestBody Client client) {
+        Optional<Client> existingClientOpt = clientRepository.findById(id);
+
+        if (existingClientOpt.isEmpty()) {
+            return new ResponseEntity<>("Client not found", HttpStatus.NOT_FOUND);
+        }
+
+        Client existingClient = existingClientOpt.get();
+
+        // Update the client data with the new values from the request body
+        existingClient.setUsername(client.getUsername());
+        existingClient.setFirstName(client.getFirstName());
+        existingClient.setLastName(client.getLastName());
+        existingClient.setEmail(client.getEmail());
+        existingClient.setAddress(client.getAddress());
+        existingClient.setPhoneNo(client.getPhoneNo());
+        existingClient.setPassword(client.getPassword());
+
+        // Save the updated client
+        clientRepository.save(existingClient);
+
+        return new ResponseEntity<>("Client updated successfully", HttpStatus.OK);
     }
 
     @PostMapping("/deleteWorker/{id}")
