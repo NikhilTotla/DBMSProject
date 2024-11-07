@@ -101,7 +101,7 @@ public class ProjectController {
 
         try {
             // Find the ProjectVisitors entry based on projectId and visitorId
-            ProjectVisitors projectVisitor = projectVisitorRepository.findByProjectIdAndServedBy(projectId, visitorId);
+            ProjectVisitors projectVisitor = projectVisitorRepository.findByProjectIdAndVisitorId(projectId, visitorId);
 
             if (projectVisitor != null) {
                 // Delete by the found project's ID

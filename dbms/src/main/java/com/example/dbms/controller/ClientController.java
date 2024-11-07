@@ -177,12 +177,12 @@ public class ClientController {
             }
 
             // Check if the visitor exists in the project
-            ProjectVisitors existingProjectVisitor = projectVisitorsRepository.findByProjectIdAndServedBy(
+            ProjectVisitors existingProjectVisitor = projectVisitorsRepository.findByProjectIdAndVisitorId(
                     projectVisitor.getProjectId(), projectVisitor.getVisitorId());
 
             if (existingProjectVisitor != null) {
                 // Delete the visitor from the project
-                projectVisitorsRepository.deleteByProjectIdAndServedBy(projectVisitor.getProjectId(), projectVisitor.getVisitorId());
+                projectVisitorsRepository.deleteByProjectIdAndVisitorId(projectVisitor.getProjectId(), projectVisitor.getVisitorId());
                 return ResponseEntity.ok(Map.of("message", "Visitor removed from project successfully"));
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Visitor not found for this project"));

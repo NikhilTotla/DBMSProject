@@ -96,10 +96,10 @@ public class ClientService {
 
     public boolean deleteVisitorFromProject(Integer projectId, Integer visitorId) {
         // Find the ProjectVisitors record
-        ProjectVisitors projectVisitor = projectVisitorsRepository.findByProjectIdAndServedBy(projectId, visitorId);
+        ProjectVisitors projectVisitor = projectVisitorsRepository.findByProjectIdAndVisitorId(projectId, visitorId);
         if (projectVisitor != null) {
             // Delete the ProjectVisitors record
-            projectVisitorsRepository.delete(projectVisitor);
+            projectVisitorsRepository.deleteById(projectVisitor.getId());
             return true;
         }
         return false;
