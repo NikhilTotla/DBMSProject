@@ -64,9 +64,15 @@ public class AdminRepository {
             // Insert new record
             String sql = "INSERT INTO admin (username, password) VALUES (?, ?)";
             jdbcTemplate.update(sql, admin.getUsername(), admin.getPassword());
+
+            // After insertion, fetch the generated ID and set it on the entity
+            String fetchIdSql = "SELECT LAST_INSERT_ID()"; // This gets the last inserted ID
+            Integer generatedId = jdbcTemplate.queryForObject(fetchIdSql, Integer.class);
+            admin.setId(generatedId);
         }
         return admin;
     }
+
 
     public void deleteById(Integer id) {
         String sql = "DELETE FROM admin WHERE id = ?";
