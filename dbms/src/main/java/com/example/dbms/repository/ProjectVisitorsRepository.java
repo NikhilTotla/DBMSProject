@@ -39,6 +39,9 @@ public class ProjectVisitorsRepository {
             visitor.setId(rs.getInt("id"));
             visitor.setFirstName(rs.getString("firstName"));
             visitor.setLastName(rs.getString("lastName"));
+            visitor.setEmail(rs.getString("Email"));
+            visitor.setEmail(rs.getString("Email"));
+            visitor.setPhone(rs.getString("Phone"));
             // Map other fields if needed
             return visitor;
         }

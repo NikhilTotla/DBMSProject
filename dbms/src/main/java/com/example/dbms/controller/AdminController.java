@@ -85,6 +85,7 @@ public class AdminController {
             return new ResponseEntity<>("Error deleting client", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/deleteWorker/{id}")
     public ResponseEntity<String> deleteWorker(@PathVariable Integer id) {
         try {
